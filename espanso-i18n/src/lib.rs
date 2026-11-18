@@ -276,6 +276,18 @@ fn flatten_value(prefix: &str, value: &Value, out: &mut HashMap<String, String>)
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::sync::{Mutex, MutexGuard};
+
+    /// Serializes tests that call [`init`] then [`t`] against the process-global
+    /// locale. Without this, parallel cargo test runners can flip the locale
+    /// mid-assertion (seen under `nix build`).
+    static TEST_LOCALE_LOCK: Mutex<()> = Mutex::new(());
+
+    fn lock_locale_for_test() -> MutexGuard<'static, ()> {
+        TEST_LOCALE_LOCK
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+    }
 
     #[test]
     fn flattens_nested_yaml_keys() {
@@ -294,6 +306,7 @@ mod tests {
 
     #[test]
     fn translates_zh_cn_tray_and_falls_back() {
+        let _guard = lock_locale_for_test();
         init(Some("zh-CN"));
         assert_eq!(t("tray.disable"), "禁用");
         assert_eq!(t("notify.running"), "Espanso 正在运行！");
@@ -305,6 +318,7 @@ mod tests {
 
     #[test]
     fn english_locale_works() {
+        let _guard = lock_locale_for_test();
         init(Some("en"));
         assert_eq!(t("tray.open_search"), "Open search bar");
     }
@@ -350,6 +364,8 @@ mod tests {
             "cli.service.start",
             "cli.package.install",
         ];
+
+        let _guard = lock_locale_for_test();
 
         init(Some("zh-CN"));
         for key in samples {
