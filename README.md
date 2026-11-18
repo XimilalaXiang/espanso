@@ -2,7 +2,7 @@
 
 > *A cross-platform Text Expander written in Rust*
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/espanso/espanso)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/XimilalaXiang/espanso)
 ![Maintenance](https://img.shields.io/badge/Maintained-yes-green.svg)
 ![Language](https://img.shields.io/badge/language-rust-orange)
 [![inspect.software](https://raw.githubusercontent.com/inspect-software/badges/main/v1/e/espanso/espanso.svg)](https://inspect.software/software/espanso/espanso)
@@ -16,9 +16,11 @@
 | :----------------------------: | :-------------------------------------: |
 | ![example](images/example.gif) | ![example2025](images/example-2025.gif) |
 
-## Chinese maintenance fork
+## 中文维护版说明 / Chinese maintenance note
 
-This fork adds a maintainable UI localization layer (`espanso-i18n` + `espanso-i18n/locales/`) with Simplified Chinese as the default UI language. Set `ESPANSO_LANG=en` to force English. See [`espanso-i18n/locales/README.md`](espanso-i18n/locales/README.md) for catalog conventions and the upstream sync workflow.
+本仓库基于原项目 [espanso/espanso](https://github.com/espanso/espanso)，在保持原有功能与文档的基础上，增加了可维护的界面本地化层（`espanso-i18n` 与语言包）。默认界面语言为简体中文（`zh-CN`）；设置 `ESPANSO_LANG=en` 或 `ESPANSO_LOCALE=en` 可切回英文。语言包约定与上游同步说明见 [`espanso-i18n/locales/README.md`](espanso-i18n/locales/README.md)。
+
+This repository is the original [Espanso](https://github.com/espanso/espanso) project plus a maintainable Simplified Chinese UI (`espanso-i18n` + locale packs). Default UI language is `zh-CN`; set `ESPANSO_LANG=en` or `ESPANSO_LOCALE=en` for English. See [`espanso-i18n/locales/README.md`](espanso-i18n/locales/README.md) for catalog conventions.
 
 ## Quick Links
 
