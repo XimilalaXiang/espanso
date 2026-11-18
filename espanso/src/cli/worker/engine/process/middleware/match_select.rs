@@ -83,10 +83,7 @@ impl MatchSelector for MatchSelectorAdapter<'_> {
             None
         };
 
-        match self
-            .search_ui
-            .show(&search_items, hint_text.as_deref())
-        {
+        match self.search_ui.show(&search_items, hint_text.as_deref()) {
             Ok(Some(selected_id)) => match selected_id.parse::<i32>() {
                 Ok(id) => Some(id),
                 Err(err) => {

@@ -93,11 +93,7 @@ pub fn detect_locale() -> String {
 
 /// Return the currently active locale id (e.g. `zh-CN` or `en`).
 pub fn current_locale() -> String {
-    state()
-        .lock()
-        .expect("i18n state poisoned")
-        .locale
-        .clone()
+    state().lock().expect("i18n state poisoned").locale.clone()
 }
 
 /// Translate a dotted key such as `tray.disable`.
@@ -126,7 +122,10 @@ fn lookup(state: &I18nState, key: &str) -> String {
     if state.locale != "en" {
         if let Some(catalog) = state.catalogs.get("en") {
             if let Some(value) = catalog.get(key) {
-                warn!("i18n missing key '{key}' in locale '{}', using English", state.locale);
+                warn!(
+                    "i18n missing key '{key}' in locale '{}', using English",
+                    state.locale
+                );
                 return value.clone();
             }
         }
@@ -229,7 +228,10 @@ mod tests {
     #[test]
     fn flattens_nested_yaml_keys() {
         let catalog = flatten_yaml("tray:\n  disable: \"Disable\"\n");
-        assert_eq!(catalog.get("tray.disable").map(String::as_str), Some("Disable"));
+        assert_eq!(
+            catalog.get("tray.disable").map(String::as_str),
+            Some("Disable")
+        );
     }
 
     #[test]
@@ -259,8 +261,16 @@ mod tests {
     fn en_and_zh_cn_catalogs_have_same_keys() {
         let en = flatten_yaml(EN_YAML);
         let zh = flatten_yaml(ZH_CN_YAML);
-        let mut missing_in_zh: Vec<_> = en.keys().filter(|k| !zh.contains_key(*k)).cloned().collect();
-        let mut missing_in_en: Vec<_> = zh.keys().filter(|k| !en.contains_key(*k)).cloned().collect();
+        let mut missing_in_zh: Vec<_> = en
+            .keys()
+            .filter(|k| !zh.contains_key(*k))
+            .cloned()
+            .collect();
+        let mut missing_in_en: Vec<_> = zh
+            .keys()
+            .filter(|k| !en.contains_key(*k))
+            .cloned()
+            .collect();
         missing_in_zh.sort();
         missing_in_en.sort();
         assert!(

@@ -41,8 +41,10 @@ impl TextUIHandler for TextUIHandlerAdapter<'_> {
     }
 
     fn show_logs(&self) -> anyhow::Result<()> {
-        self.text_ui
-            .show_file(&t("textview.logs_title"), &self.paths.runtime.join("espanso.log"))?;
+        self.text_ui.show_file(
+            &t("textview.logs_title"),
+            &self.paths.runtime.join("espanso.log"),
+        )?;
         Ok(())
     }
 }
