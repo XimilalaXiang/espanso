@@ -40,6 +40,7 @@ use crate::{
     config::load_config,
     util::log_system_info,
 };
+use espanso_i18n::t_static;
 
 mod capabilities;
 mod cli;
@@ -94,390 +95,406 @@ fn main() {
     let processed_args = preprocess_aliases(args);
 
     let mut clap_instance = App::new("espanso")
-    .version(VERSION)
-    .long_version(VERSION)
-    .author("Federico Terzi and the espanso contributors")
-    .about("A Privacy-first, Cross-platform Text Expander")
-    .arg(
-      Arg::with_name("v")
-        .short('v')
-        .action(clap::ArgAction::Count)
-        .help("Sets the level of verbosity"),
-    )
-    .arg(
-      Arg::with_name("config_dir")
-        .long("config_dir")
-        .takes_value(true)
-        .hidden(true)
-        .help("Specify a custom path from which espanso should read the configuration"),
-    )
-    .arg(
-      Arg::with_name("package_dir")
-        .long("package_dir")
-        .takes_value(true)
-        .hidden(true)
-        .help("Specify a custom path for the espanso package directory"),
-    )
-    .arg(
-      Arg::with_name("runtime_dir")
-        .long("runtime_dir")
-        .takes_value(true)
-        .hidden(true)
-        .help("Specify a custom path for the espanso runtime directory"),
-    )
-    .subcommand(
-      SubCommand::with_name("env-path")
+        .version(VERSION)
+        .long_version(VERSION)
+        .author("Federico Terzi and the espanso contributors")
+        .about(t_static("cli.about"))
         .arg(
-          Arg::with_name("prompt")
-            .long("prompt")
-            .required(false)
-            .takes_value(false)
-            .help("macOS only:Prompt for permissions if the operation requires elevated privileges."),
-        )
-        .subcommand(SubCommand::with_name("register").about("Add 'espanso' command to PATH"))
-        .subcommand(SubCommand::with_name("unregister").about("Remove 'espanso' command from PATH"))
-        .about("Add or remove the 'espanso' command from the PATH"),
-    )
-    .subcommand(SubCommand::with_name("cmd")
-        .about("Send a command to the espanso daemon.")
-        .subcommand(SubCommand::with_name("enable")
-            .about("Enable expansions."))
-        .subcommand(SubCommand::with_name("disable")
-            .about("Disable expansions."))
-        .subcommand(SubCommand::with_name("toggle")
-            .about("Enable/Disable expansions."))
-        .subcommand(SubCommand::with_name("search")
-            .about("Open the Espanso's search bar."))
-    )
-    .subcommand(SubCommand::with_name("edit")
-        .about("Shortcut to open the default text editor to edit config files")
-        .arg(Arg::with_name("target_file")
-            .help(r#"Defaults to "match/base.yml", it contains the relative path of the file you want to edit,
-such as 'config/default.yml' or 'match/base.yml'.
-For convenience, you can also specify the name directly and Espanso will figure out the path.
-For example, specifying 'email' is equivalent to 'match/email.yml'."#))
-    )
-    .subcommand(
-      SubCommand::with_name("daemon")
-        .setting(AppSettings::Hidden)
-        .about("Start the daemon without spawning a new process."),
-    )
-    .subcommand(SubCommand::with_name("launcher").setting(AppSettings::Hidden))
-    .subcommand(SubCommand::with_name("log").about("Print the daemon logs."))
-    .subcommand(
-      SubCommand::with_name("stats")
-        .about("Show expansion statistics")
-        .arg(
-          Arg::with_name("period")
-            .long("period")
-            .takes_value(true)
-            .help("Limit to period: today|week|month|year|all (default all)")
+            Arg::with_name("v")
+                .short('v')
+                .action(clap::ArgAction::Count)
+                .help(t_static("cli.help.verbosity")),
         )
         .arg(
-          Arg::with_name("count")
-            .long("count")
-            .takes_value(true)
-            .help("Top N triggers to show (default 10)")
+            Arg::with_name("config_dir")
+                .long("config_dir")
+                .takes_value(true)
+                .hidden(true)
+                .help(t_static("cli.help.config_dir")),
         )
         .arg(
-          Arg::with_name("json")
-            .long("json")
-            .takes_value(false)
-            .help("Output as JSON")
+            Arg::with_name("package_dir")
+                .long("package_dir")
+                .takes_value(true)
+                .hidden(true)
+                .help(t_static("cli.help.package_dir")),
         )
         .arg(
-          Arg::with_name("grep")
-            .long("grep")
-            .takes_value(true)
-            .help("Filter triggers by SQL LIKE pattern, e.g., :td%")
-        )
-        .subcommand(
-          SubCommand::with_name("clear")
-            .about("Clear the stats database")
-        )
-        .subcommand(
-          SubCommand::with_name("prune")
-            .about("Delete records older than N days")
-            .arg(
-              Arg::with_name("days")
-                .long("days")
+            Arg::with_name("runtime_dir")
+                .long("runtime_dir")
                 .takes_value(true)
-                .help("Days to keep (default 180)")
-            )
-        )
-    )
-    .subcommand(
-      SubCommand::with_name("modulo")
-        .setting(AppSettings::Hidden)
-        .subcommand(
-          SubCommand::with_name("form")
-            .about("Display a customizable form")
-            .arg(
-              Arg::with_name("input_file")
-                .short('i')
-                .takes_value(true)
-                .help("Input file or - for stdin"),
-            )
-            .arg(
-              Arg::with_name("json")
-                .short('j')
-                .required(false)
-                .takes_value(false)
-                .help("Interpret the input data as JSON"),
-            ),
+                .hidden(true)
+                .help(t_static("cli.help.runtime_dir")),
         )
         .subcommand(
-          SubCommand::with_name("search")
-            .about("Display a search box")
-            .arg(
-              Arg::with_name("input_file")
-                .short('i')
-                .takes_value(true)
-                .help("Input file or - for stdin"),
-            )
-            .arg(
-              Arg::with_name("json")
-                .short('j')
-                .required(false)
-                .takes_value(false)
-                .help("Interpret the input data as JSON"),
-            ),
+            SubCommand::with_name("env-path")
+                .arg(
+                    Arg::with_name("prompt")
+                        .long("prompt")
+                        .required(false)
+                        .takes_value(false)
+                        .help(t_static("cli.env_path.help.prompt")),
+                )
+                .subcommand(
+                    SubCommand::with_name("register").about(t_static("cli.env_path.register")),
+                )
+                .subcommand(
+                    SubCommand::with_name("unregister").about(t_static("cli.env_path.unregister")),
+                )
+                .about(t_static("cli.env_path.about")),
         )
         .subcommand(
-          SubCommand::with_name("textview")
-            .about("Display a Text View")
-            .arg(
-              Arg::with_name("input_file")
-                .short('i')
-                .takes_value(true)
-                .help("Input file or - for stdin"),
-            )
-            .arg(
-              Arg::with_name("title")
-              .long("title")
-                .required(true)
-                .takes_value(true)
-                .help("Window title to display"),
-            ),
-        )
-        .subcommand(SubCommand::with_name("troubleshoot").about("Display the troubleshooting GUI"))
-        .subcommand(
-          SubCommand::with_name("welcome")
-            .about("Display the welcome screen")
-            .arg(
-              Arg::with_name("already-running")
-                .long("already-running")
-                .takes_value(false),
-            ),
-        ),
-    )
-    .subcommand(
-      SubCommand::with_name("path")
-        .about("Prints all the espanso directory paths to easily locate configuration and matches.")
-        .subcommand(SubCommand::with_name("config").about("Print the current config folder path."))
-        .subcommand(
-          SubCommand::with_name("packages").about("Print the current packages folder path."),
+            SubCommand::with_name("cmd")
+                .about(t_static("cli.cmd.about"))
+                .subcommand(SubCommand::with_name("enable").about(t_static("cli.cmd.enable")))
+                .subcommand(SubCommand::with_name("disable").about(t_static("cli.cmd.disable")))
+                .subcommand(SubCommand::with_name("toggle").about(t_static("cli.cmd.toggle")))
+                .subcommand(SubCommand::with_name("search").about(t_static("cli.cmd.search"))),
         )
         .subcommand(
-          SubCommand::with_name("data")
-            .about("Print the current data folder path.")
-            .setting(AppSettings::Hidden),
-        ) // Legacy path
-        .subcommand(
-          SubCommand::with_name("runtime").about("Print the current runtime folder path."),
+            SubCommand::with_name("edit")
+                .about(t_static("cli.edit.about"))
+                .arg(Arg::with_name("target_file").help(t_static("cli.edit.help.target_file"))),
         )
         .subcommand(
-          SubCommand::with_name("default").about("Print the default configuration file path."),
+            SubCommand::with_name("daemon")
+                .setting(AppSettings::Hidden)
+                .about(t_static("cli.daemon.about")),
         )
-        .subcommand(SubCommand::with_name("base").about("Print the default match file path.")),
-    )
-    .subcommand(
-      SubCommand::with_name("service")
-        .subcommand(SubCommand::with_name("register").about("Register espanso as a system service"))
+        .subcommand(SubCommand::with_name("launcher").setting(AppSettings::Hidden))
+        .subcommand(SubCommand::with_name("log").about(t_static("cli.log.about")))
         .subcommand(
-          SubCommand::with_name("unregister").about("Unregister espanso from system services"),
+            SubCommand::with_name("stats")
+                .about(t_static("cli.stats.about"))
+                .arg(
+                    Arg::with_name("period")
+                        .long("period")
+                        .takes_value(true)
+                        .help(t_static("cli.stats.help.period")),
+                )
+                .arg(
+                    Arg::with_name("count")
+                        .long("count")
+                        .takes_value(true)
+                        .help(t_static("cli.stats.help.count")),
+                )
+                .arg(
+                    Arg::with_name("json")
+                        .long("json")
+                        .takes_value(false)
+                        .help(t_static("cli.stats.help.json")),
+                )
+                .arg(
+                    Arg::with_name("grep")
+                        .long("grep")
+                        .takes_value(true)
+                        .help(t_static("cli.stats.help.grep")),
+                )
+                .subcommand(SubCommand::with_name("clear").about(t_static("cli.stats.clear")))
+                .subcommand(
+                    SubCommand::with_name("prune")
+                        .about(t_static("cli.stats.prune"))
+                        .arg(
+                            Arg::with_name("days")
+                                .long("days")
+                                .takes_value(true)
+                                .help(t_static("cli.stats.help.days")),
+                        ),
+                ),
         )
         .subcommand(
-          SubCommand::with_name("check")
-            .about("Check if espanso is registered as a system service"),
+            SubCommand::with_name("modulo")
+                .setting(AppSettings::Hidden)
+                .subcommand(
+                    SubCommand::with_name("form")
+                        .about(t_static("cli.modulo.form"))
+                        .arg(
+                            Arg::with_name("input_file")
+                                .short('i')
+                                .takes_value(true)
+                                .help(t_static("cli.modulo.help.input_file")),
+                        )
+                        .arg(
+                            Arg::with_name("json")
+                                .short('j')
+                                .required(false)
+                                .takes_value(false)
+                                .help(t_static("cli.modulo.help.json")),
+                        ),
+                )
+                .subcommand(
+                    SubCommand::with_name("search")
+                        .about(t_static("cli.modulo.search"))
+                        .arg(
+                            Arg::with_name("input_file")
+                                .short('i')
+                                .takes_value(true)
+                                .help(t_static("cli.modulo.help.input_file")),
+                        )
+                        .arg(
+                            Arg::with_name("json")
+                                .short('j')
+                                .required(false)
+                                .takes_value(false)
+                                .help(t_static("cli.modulo.help.json")),
+                        ),
+                )
+                .subcommand(
+                    SubCommand::with_name("textview")
+                        .about(t_static("cli.modulo.textview"))
+                        .arg(
+                            Arg::with_name("input_file")
+                                .short('i')
+                                .takes_value(true)
+                                .help(t_static("cli.modulo.help.input_file")),
+                        )
+                        .arg(
+                            Arg::with_name("title")
+                                .long("title")
+                                .required(true)
+                                .takes_value(true)
+                                .help(t_static("cli.modulo.help.title")),
+                        ),
+                )
+                .subcommand(
+                    SubCommand::with_name("troubleshoot")
+                        .about(t_static("cli.modulo.troubleshoot")),
+                )
+                .subcommand(
+                    SubCommand::with_name("welcome")
+                        .about(t_static("cli.modulo.welcome"))
+                        .arg(
+                            Arg::with_name("already-running")
+                                .long("already-running")
+                                .takes_value(false),
+                        ),
+                ),
         )
-        .subcommand(SubCommand::with_name("start")
-        .about("Start espanso as a service")
-        .arg(
-            Arg::with_name("unmanaged")
-                .long("unmanaged")
-                .required(false)
-                .takes_value(false)
-                .help("Run espanso as an unmanaged service (avoid system manager)"),
-        ))
-        .subcommand(SubCommand::with_name("restart")
-        .about("Restart the espanso service")
-        .arg(
-            Arg::with_name("unmanaged")
-                .long("unmanaged")
-                .required(false)
-                .takes_value(false)
-        ))
-        .subcommand(SubCommand::with_name("stop").about("Stop espanso service"))
         .subcommand(
-        SubCommand::with_name("status").about("Check if the espanso daemon is running or not."))
-        .about("A collection of commands to manage the Espanso service (for example, enabling auto-start on system boot)."),
-    )
-    .subcommand(SubCommand::with_name("match")
-        .about("List and execute matches from the CLI")
-        .subcommand(SubCommand::with_name("list")
-            .about("Print matches to standard output")
-            .arg(Arg::with_name("json")
-                .short('j')
-                .long("json")
-                .help("Output matches to the JSON format")
-                .required(false)
-                .takes_value(false)
-            )
-            .arg(Arg::with_name("onlytriggers")
-                .short('t')
-                .long("only-triggers")
-                .help("Print only triggers without replacement")
-                .required(false)
-                .takes_value(false)
-            )
-            .arg(Arg::with_name("preservenewlines")
-                .short('n')
-                .long("preserve-newlines")
-                .help("Preserve newlines when printing replacements. Does nothing when using JSON format.")
-                .required(false)
-                .takes_value(false)
-            )
-            .arg(Arg::with_name("class")
-                .long("class")
-                .help("Only return matches that would be active with the given class. This is relevant if you want to list matches only active inside an app-specific config.")
-                .required(false)
-                .takes_value(true)
-            )
-            .arg(Arg::with_name("title")
-                .long("title")
-                .help("Only return matches that would be active with the given title. This is relevant if you want to list matches only active inside an app-specific config.")
-                .required(false)
-                .takes_value(true)
-            )
-            .arg(Arg::with_name("exec")
-                .long("exec")
-                .help("Only return matches that would be active with the given exec. This is relevant if you want to list matches only active inside an app-specific config.")
-                .required(false)
-                .takes_value(true)
-            )
+            SubCommand::with_name("path")
+                .about(t_static("cli.path.about"))
+                .subcommand(SubCommand::with_name("config").about(t_static("cli.path.config")))
+                .subcommand(SubCommand::with_name("packages").about(t_static("cli.path.packages")))
+                .subcommand(
+                    SubCommand::with_name("data")
+                        .about(t_static("cli.path.data"))
+                        .setting(AppSettings::Hidden),
+                ) // Legacy path
+                .subcommand(SubCommand::with_name("runtime").about(t_static("cli.path.runtime")))
+                .subcommand(SubCommand::with_name("default").about(t_static("cli.path.default")))
+                .subcommand(SubCommand::with_name("base").about(t_static("cli.path.base"))),
         )
-        .subcommand(SubCommand::with_name("exec")
-            .about("Triggers the expansion of a match")
-            .arg(Arg::with_name("trigger")
-                .short('t')
-                .long("trigger")
-                .help("The trigger of the match to be expanded")
-                .required(false)
-                .takes_value(true)
-            )
-            .arg(Arg::with_name("arg")
-                .long("arg")
-                .help("Specify also an argument for the expansion, following the --arg 'name=value' format. You can specify multiple ones.")
-                .required(false)
-                .takes_value(true)
-                .multiple(true)
-                .number_of_values(1)
-            )
+        .subcommand(
+            SubCommand::with_name("service")
+                .subcommand(
+                    SubCommand::with_name("register").about(t_static("cli.service.register")),
+                )
+                .subcommand(
+                    SubCommand::with_name("unregister").about(t_static("cli.service.unregister")),
+                )
+                .subcommand(SubCommand::with_name("check").about(t_static("cli.service.check")))
+                .subcommand(
+                    SubCommand::with_name("start")
+                        .about(t_static("cli.service.start"))
+                        .arg(
+                            Arg::with_name("unmanaged")
+                                .long("unmanaged")
+                                .required(false)
+                                .takes_value(false)
+                                .help(t_static("cli.service.help.unmanaged")),
+                        ),
+                )
+                .subcommand(
+                    SubCommand::with_name("restart")
+                        .about(t_static("cli.service.restart"))
+                        .arg(
+                            Arg::with_name("unmanaged")
+                                .long("unmanaged")
+                                .required(false)
+                                .takes_value(false),
+                        ),
+                )
+                .subcommand(SubCommand::with_name("stop").about(t_static("cli.service.stop")))
+                .subcommand(SubCommand::with_name("status").about(t_static("cli.service.status")))
+                .about(t_static("cli.service.about")),
         )
-    )
-    .subcommand(
-      SubCommand::with_name("package")
-        .about("package-management commands")
         .subcommand(
-SubCommand::with_name("install")
-    .about("Install a package")
-    .arg(
-      Arg::with_name("external")
-        .short('e')
-        .long("external")
-        .required(false)
-        .takes_value(false)
-        .help("Allow installing packages from non-verified repositories."),
-    )
-    .arg(Arg::with_name("package_name").help("Package name"))
-    .arg(
-      Arg::with_name("version")
-        .long("version")
-        .required(false)
-        .takes_value(true)
-        .help("Force a particular version to be installed instead of the latest available."),
-    )
-    .arg(
-      Arg::with_name("git")
-        .long("git")
-        .required(false)
-        .takes_value(true)
-        .help("Git repository from which espanso should install the package."),
-    )
-    .arg(
-      Arg::with_name("git-branch")
-        .long("git-branch")
-        .required(false)
-        .takes_value(true)
-        .help("Force espanso to search for the package on a specific git branch"),
-    )
-    .arg(
-      Arg::with_name("force")
-        .long("force")
-        .required(false)
-        .takes_value(false)
-        .help("Overwrite the package if already installed"),
-    )
-    .arg(
-      Arg::with_name("refresh-index")
-        .long("refresh-index")
-        .required(false)
-        .takes_value(false)
-        .help("Request a fresh copy of the Espanso Hub package index instead of using the cached version.")
-    )
-    .arg(
-      Arg::with_name("use-native-git")
-        .long("use-native-git")
-        .required(false)
-        .takes_value(false)
-        .help("If specified, espanso will use the 'git' command instead of trying direct methods."),
-    ))
-        .subcommand(
-          SubCommand::with_name("uninstall")
-        .about("Remove a package")
-        .arg(Arg::with_name("package_name").help("Package name")))
-        .subcommand(SubCommand::with_name("update").about(
-          "Update a package. If 'all' is passed as package name, attempts to update all packages.",
-        ).arg(Arg::with_name("package_name").help("Package name")))
-        .subcommand(
-          SubCommand::with_name("list").about("List all installed packages"),
-        ),
-    )
-    .subcommand(
-      SubCommand::with_name("workaround")
-        .subcommand(
-          SubCommand::with_name("secure-input")
-            .about("Attempt to disable secure input by automating the common steps."),
+            SubCommand::with_name("match")
+                .about(t_static("cli.match.about"))
+                .subcommand(
+                    SubCommand::with_name("list")
+                        .about(t_static("cli.match.list"))
+                        .arg(
+                            Arg::with_name("json")
+                                .short('j')
+                                .long("json")
+                                .help(t_static("cli.match.help.json"))
+                                .required(false)
+                                .takes_value(false),
+                        )
+                        .arg(
+                            Arg::with_name("onlytriggers")
+                                .short('t')
+                                .long("only-triggers")
+                                .help(t_static("cli.match.help.only_triggers"))
+                                .required(false)
+                                .takes_value(false),
+                        )
+                        .arg(
+                            Arg::with_name("preservenewlines")
+                                .short('n')
+                                .long("preserve-newlines")
+                                .help(t_static("cli.match.help.preserve_newlines"))
+                                .required(false)
+                                .takes_value(false),
+                        )
+                        .arg(
+                            Arg::with_name("class")
+                                .long("class")
+                                .help(t_static("cli.match.help.class"))
+                                .required(false)
+                                .takes_value(true),
+                        )
+                        .arg(
+                            Arg::with_name("title")
+                                .long("title")
+                                .help(t_static("cli.match.help.title"))
+                                .required(false)
+                                .takes_value(true),
+                        )
+                        .arg(
+                            Arg::with_name("exec")
+                                .long("exec")
+                                .help(t_static("cli.match.help.exec"))
+                                .required(false)
+                                .takes_value(true),
+                        ),
+                )
+                .subcommand(
+                    SubCommand::with_name("exec")
+                        .about(t_static("cli.match.exec"))
+                        .arg(
+                            Arg::with_name("trigger")
+                                .short('t')
+                                .long("trigger")
+                                .help(t_static("cli.match.help.trigger"))
+                                .required(false)
+                                .takes_value(true),
+                        )
+                        .arg(
+                            Arg::with_name("arg")
+                                .long("arg")
+                                .help(t_static("cli.match.help.arg"))
+                                .required(false)
+                                .takes_value(true)
+                                .multiple(true)
+                                .number_of_values(1),
+                        ),
+                ),
         )
-        .about("A collection of workarounds to solve some common problems."),
-    )
-    .subcommand(
-      SubCommand::with_name("worker")
-        .setting(AppSettings::Hidden)
-        .arg(
-          Arg::with_name("start-reason")
-            .long("start-reason")
-            .required(false)
-            .takes_value(true),
+        .subcommand(
+            SubCommand::with_name("package")
+                .about(t_static("cli.package.about"))
+                .subcommand(
+                    SubCommand::with_name("install")
+                        .about(t_static("cli.package.install"))
+                        .arg(
+                            Arg::with_name("external")
+                                .short('e')
+                                .long("external")
+                                .required(false)
+                                .takes_value(false)
+                                .help(t_static("cli.package.help.external")),
+                        )
+                        .arg(
+                            Arg::with_name("package_name")
+                                .help(t_static("cli.package.help.package_name")),
+                        )
+                        .arg(
+                            Arg::with_name("version")
+                                .long("version")
+                                .required(false)
+                                .takes_value(true)
+                                .help(t_static("cli.package.help.version")),
+                        )
+                        .arg(
+                            Arg::with_name("git")
+                                .long("git")
+                                .required(false)
+                                .takes_value(true)
+                                .help(t_static("cli.package.help.git")),
+                        )
+                        .arg(
+                            Arg::with_name("git-branch")
+                                .long("git-branch")
+                                .required(false)
+                                .takes_value(true)
+                                .help(t_static("cli.package.help.git_branch")),
+                        )
+                        .arg(
+                            Arg::with_name("force")
+                                .long("force")
+                                .required(false)
+                                .takes_value(false)
+                                .help(t_static("cli.package.help.force")),
+                        )
+                        .arg(
+                            Arg::with_name("refresh-index")
+                                .long("refresh-index")
+                                .required(false)
+                                .takes_value(false)
+                                .help(t_static("cli.package.help.refresh_index")),
+                        )
+                        .arg(
+                            Arg::with_name("use-native-git")
+                                .long("use-native-git")
+                                .required(false)
+                                .takes_value(false)
+                                .help(t_static("cli.package.help.use_native_git")),
+                        ),
+                )
+                .subcommand(
+                    SubCommand::with_name("uninstall")
+                        .about(t_static("cli.package.uninstall"))
+                        .arg(
+                            Arg::with_name("package_name")
+                                .help(t_static("cli.package.help.package_name")),
+                        ),
+                )
+                .subcommand(
+                    SubCommand::with_name("update")
+                        .about(t_static("cli.package.update"))
+                        .arg(
+                            Arg::with_name("package_name")
+                                .help(t_static("cli.package.help.package_name")),
+                        ),
+                )
+                .subcommand(SubCommand::with_name("list").about(t_static("cli.package.list"))),
         )
-        .arg(
-          Arg::with_name("monitor-daemon")
-            .long("monitor-daemon")
-            .required(false)
-            .takes_value(false),
-        ),
-    );
+        .subcommand(
+            SubCommand::with_name("workaround")
+                .subcommand(
+                    SubCommand::with_name("secure-input")
+                        .about(t_static("cli.workaround.secure_input")),
+                )
+                .about(t_static("cli.workaround.about")),
+        )
+        .subcommand(
+            SubCommand::with_name("worker")
+                .setting(AppSettings::Hidden)
+                .arg(
+                    Arg::with_name("start-reason")
+                        .long("start-reason")
+                        .required(false)
+                        .takes_value(true),
+                )
+                .arg(
+                    Arg::with_name("monitor-daemon")
+                        .long("monitor-daemon")
+                        .required(false)
+                        .takes_value(false),
+                ),
+        );
 
     // TODO: explain that the register and unregister commands are only meaningful
     // when using the system daemon manager on macOS and Linux

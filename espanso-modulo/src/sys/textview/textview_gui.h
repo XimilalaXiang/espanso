@@ -10,6 +10,7 @@
 #include <wx/artprov.h>
 #include <wx/bitmap.h>
 #include <wx/button.h>
+#include "../common/common.h"
 #include <wx/colour.h>
 #include <wx/font.h>
 #include <wx/frame.h>

@@ -8,6 +8,7 @@
 #define _UNICODE
 
 #include "welcome_gui.h"
+#include "../common/common.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -23,7 +24,7 @@ WelcomeFrame::WelcomeFrame(wxWindow *parent, wxWindowID id,
 
     bSizer1->Add(0, 10, 0, wxEXPAND, 5);
 
-    title_label = new wxStaticText(this, wxID_ANY, wxT("Espanso is running!"),
+    title_label = new wxStaticText(this, wxID_ANY, Tr("welcome.title"),
                                    wxDefaultPosition, wxDefaultSize, 0);
     title_label->Wrap(-1);
     title_label->SetFont(wxFont(20, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
@@ -32,7 +33,7 @@ WelcomeFrame::WelcomeFrame(wxWindow *parent, wxWindowID id,
     bSizer1->Add(title_label, 0, wxALIGN_CENTER | wxALL, 10);
 
     tray_info_label = new wxStaticText(
-        this, wxID_ANY, wxT("You should now see its icon on the tray bar:"),
+        this, wxID_ANY, Tr("welcome.tray_info"),
         wxDefaultPosition, wxDefaultSize, 0);
     tray_info_label->Wrap(-1);
     bSizer1->Add(tray_info_label, 0, wxALIGN_CENTER | wxALL, 10);
@@ -44,7 +45,7 @@ WelcomeFrame::WelcomeFrame(wxWindow *parent, wxWindowID id,
     bSizer1->Add(0, 10, 0, 0, 10);
 
     test_label = new wxStaticText(
-        this, wxID_ANY, wxT("Try typing \":espanso\" below (without quotes)"),
+        this, wxID_ANY, Tr("welcome.try_typing"),
         wxDefaultPosition, wxDefaultSize, 0);
     test_label->Wrap(-1);
     bSizer1->Add(test_label, 0, wxALIGN_CENTER | wxALL, 10);
@@ -58,14 +59,14 @@ WelcomeFrame::WelcomeFrame(wxWindow *parent, wxWindowID id,
 
     doc_label = new wxStaticText(
         this, wxID_ANY,
-        wxT("Do you want to know more? Visit the documentation:"),
+        Tr("welcome.docs_label"),
         wxDefaultPosition, wxDefaultSize, 0);
     doc_label->Wrap(-1);
     bSizer1->Add(doc_label, 0, wxALIGN_CENTER | wxALL, 10);
 
     m_hyperlink1 = new wxHyperlinkCtrl(
-        this, wxID_ANY, wxT("https://espanso.org/docs/get-started/"),
-        wxT("https://espanso.org/docs/get-started/"), wxDefaultPosition,
+        this, wxID_ANY, Tr("welcome.docs_url"),
+        Tr("welcome.docs_url"), wxDefaultPosition,
         wxDefaultSize, wxHL_DEFAULT_STYLE);
     bSizer1->Add(m_hyperlink1, 0, wxALIGN_CENTER | wxALL, 10);
 
@@ -75,13 +76,13 @@ WelcomeFrame::WelcomeFrame(wxWindow *parent, wxWindowID id,
     bSizer2 = new wxBoxSizer(wxHORIZONTAL);
 
     dont_show_checkbox =
-        new wxCheckBox(this, wxID_ANY, wxT("Don't show this again"),
+        new wxCheckBox(this, wxID_ANY, Tr("welcome.dont_show_again"),
                        wxDefaultPosition, wxDefaultSize, 0);
     bSizer2->Add(dont_show_checkbox, 0, wxALIGN_CENTER_VERTICAL | wxALL, 10);
 
     bSizer2->Add(0, 0, 1, wxEXPAND, 5);
 
-    got_it_btn = new wxButton(this, wxID_ANY, wxT("Got it!"), wxDefaultPosition,
+    got_it_btn = new wxButton(this, wxID_ANY, Tr("welcome.got_it"), wxDefaultPosition,
                               wxDefaultSize, 0);
 
     got_it_btn->SetDefault();

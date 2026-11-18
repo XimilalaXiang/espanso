@@ -30,8 +30,9 @@ Territory tags fall back to language (`zh-CN` → `zh` if present → `en`).
 1. **Never hardcode user-facing UI strings in Rust/C++** for surfaces already covered here. Add a key instead.
 2. When upstream introduces new English UI copy, append the key to `en.yml` first, then draft `zh-CN.yml`.
 3. Do not rename existing keys without a migration note; automation diffs keys by name.
-4. Keep YAML nested under stable groups (`tray`, `notify`, `search`, `builtin`, …).
+4. Keep YAML nested under stable groups (`tray`, `notify`, `search`, `builtin`, `welcome`, `wizard`, `troubleshooting`, `cli`, …).
 5. Machine translations for new keys should be marked in the PR body as `needs-review` until a human spot-checks them.
+6. Run `python3 scripts/extract_locale_keys.py` (and optionally `--draft`) after syncing upstream to find missing keys. Use `scripts/check_locales.sh` in CI-like checks.
 
 ## Key naming
 

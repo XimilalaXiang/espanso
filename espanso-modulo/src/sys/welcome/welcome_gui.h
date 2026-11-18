@@ -21,6 +21,7 @@
 #include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/statbmp.h>
+#include "../common/common.h"
 #include <wx/stattext.h>
 #include <wx/string.h>
 #include <wx/textctrl.h>
@@ -50,7 +51,7 @@ class WelcomeFrame : public wxFrame {
 
   public:
     WelcomeFrame(wxWindow *parent, wxWindowID id = wxID_ANY,
-                 const wxString &title = wxT("Espanso is running!"),
+                 const wxString &title = Tr("welcome.title"),
                  const wxPoint &pos = wxDefaultPosition,
                  const wxSize &size = wxSize(521, 597),
                  long style = wxCAPTION | wxCLOSE_BOX | wxSYSTEM_MENU |
