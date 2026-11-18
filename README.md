@@ -18,7 +18,7 @@
 
 ## Chinese maintenance fork
 
-This fork adds a maintainable UI localization layer (`espanso-i18n` + `locales/`) with Simplified Chinese as the default UI language. Set `ESPANSO_LANG=en` to force English. See [`locales/README.md`](locales/README.md) for catalog conventions and the upstream sync workflow.
+This fork adds a maintainable UI localization layer (`espanso-i18n` + `espanso-i18n/locales/`) with Simplified Chinese as the default UI language. Set `ESPANSO_LANG=en` to force English. See [`espanso-i18n/locales/README.md`](espanso-i18n/locales/README.md) for catalog conventions and the upstream sync workflow.
 
 ## Quick Links
 

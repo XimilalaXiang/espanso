@@ -72,8 +72,8 @@ jobs:
 
           Checklist before merge:
           - [ ] `cargo test -p espanso-i18n`
-          - [ ] Diff `locales/en.yml` against any new hardcoded UI strings
-          - [ ] Update `locales/zh-CN.yml` for new keys (`needs-review` if machine-translated)
+          - [ ] Diff `espanso-i18n/locales/en.yml` against any new hardcoded UI strings
+          - [ ] Update `espanso-i18n/locales/zh-CN.yml` for new keys (`needs-review` if machine-translated)
           EOF
           )
           EXISTING=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number')
@@ -89,5 +89,5 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TITLE="sync-upstream conflict $(date -u +%Y-%m-%d)"
-          BODY="Automated sync from \`espanso/espanso@dev\` failed with merge conflicts. Please resolve manually, keeping \`locales/\` and \`espanso-i18n\` intact."
+          BODY="Automated sync from \`espanso/espanso@dev\` failed with merge conflicts. Please resolve manually, keeping \`espanso-i18n\` (including \`espanso-i18n/locales/\`) intact."
           gh issue create --title "$TITLE" --body "$BODY"

@@ -28,8 +28,8 @@ use std::sync::{Mutex, OnceLock};
 use log::{debug, warn};
 use serde_norway::Value;
 
-const EN_YAML: &str = include_str!("../../locales/en.yml");
-const ZH_CN_YAML: &str = include_str!("../../locales/zh-CN.yml");
+const EN_YAML: &str = include_str!("../locales/en.yml");
+const ZH_CN_YAML: &str = include_str!("../locales/zh-CN.yml");
 
 static STATE: OnceLock<Mutex<I18nState>> = OnceLock::new();
 
