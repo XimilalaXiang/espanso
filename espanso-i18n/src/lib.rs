@@ -85,10 +85,10 @@ pub fn init(preferred: Option<&str>) {
 
 /// Best-effort locale detection helper for tooling / future config integration.
 pub fn detect_locale() -> String {
-    env_locale()
-        .or_else(system_locale)
-        .map(|value| normalize_locale(&value))
-        .unwrap_or_else(|| DEFAULT_LOCALE.to_string())
+    env_locale().or_else(system_locale).map_or_else(
+        || DEFAULT_LOCALE.to_string(),
+        |value| normalize_locale(&value),
+    )
 }
 
 /// Return the currently active locale id (e.g. `zh-CN` or `en`).
