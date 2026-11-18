@@ -18,6 +18,7 @@
  */
 
 use espanso_engine::event::{effect::TextInjectRequest, ui::ShowTextEvent, EventType};
+use espanso_i18n::t;
 
 use crate::cli::worker::builtin::generate_next_builtin_id;
 
@@ -28,7 +29,7 @@ use super::BuiltInMatch;
 pub fn create_match_paste_active_config_info() -> BuiltInMatch {
     BuiltInMatch {
         id: generate_next_builtin_id(),
-        label: "Paste active config information",
+        label: t("builtin.paste_active_config"),
         triggers: vec!["#pacfg#".to_string()],
         action: |context| {
             let dump = context.get_active_config().pretty_dump();
@@ -45,7 +46,7 @@ pub fn create_match_paste_active_config_info() -> BuiltInMatch {
 pub fn create_match_paste_active_app_info() -> BuiltInMatch {
     BuiltInMatch {
         id: generate_next_builtin_id(),
-        label: "Paste active application information (detect)",
+        label: t("builtin.paste_active_app"),
         triggers: vec!["#pdetect#".to_string()],
         action: |context| {
             let info = context.get_active_app_info();
@@ -69,7 +70,7 @@ pub fn create_match_paste_active_app_info() -> BuiltInMatch {
 pub fn create_match_show_active_config_info() -> BuiltInMatch {
     BuiltInMatch {
         id: generate_next_builtin_id(),
-        label: "Show active config information",
+        label: t("builtin.show_active_config"),
         triggers: vec!["#acfg#".to_string()],
         action: |context| {
             let dump = context.get_active_config().pretty_dump();
@@ -86,7 +87,7 @@ pub fn create_match_show_active_config_info() -> BuiltInMatch {
 pub fn create_match_show_active_app_info() -> BuiltInMatch {
     BuiltInMatch {
         id: generate_next_builtin_id(),
-        label: "Show active application information (detect)",
+        label: t("builtin.show_active_app"),
         triggers: vec!["#detect#".to_string()],
         action: |context| {
             let info = context.get_active_app_info();
@@ -110,7 +111,7 @@ pub fn create_match_show_active_app_info() -> BuiltInMatch {
 pub fn create_match_show_logs() -> BuiltInMatch {
     BuiltInMatch {
         id: generate_next_builtin_id(),
-        label: "Show Espanso's logs",
+        label: t("builtin.show_logs"),
         triggers: vec!["#log#".to_string()],
         action: |_| EventType::ShowLogs,
         ..Default::default()

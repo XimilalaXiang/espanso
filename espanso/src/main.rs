@@ -85,6 +85,11 @@ fn main() {
         Err(e) => warn!("Could not attach console! {e}"),
     }
 
+    // Initialize UI locale before any handler runs (worker/daemon/modulo are
+    // separate processes that each enter through main).
+    espanso_i18n::init(None);
+    info!("UI locale: {}", espanso_i18n::current_locale());
+
     let args: Vec<String> = std::env::args().collect();
     let processed_args = preprocess_aliases(args);
 

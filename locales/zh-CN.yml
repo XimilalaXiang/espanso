@@ -1,0 +1,38 @@
+# Simplified Chinese UI catalog.
+# Missing keys fall back to locales/en.yml at runtime.
+
+tray:
+  disable: "禁用"
+  enable: "启用"
+  open_search: "打开搜索栏"
+  reload_config: "重新加载配置"
+  open_config_folder: "打开配置文件夹"
+  show_logs: "显示日志"
+  exit: "退出 Espanso"
+  secure_input_explain: "为什么 Espanso 无法工作？"
+  secure_input_workaround: "启动 SecureInput 自动修复"
+
+notify:
+  running: "Espanso 正在运行！"
+  config_reloaded: "配置已重新加载！"
+  config_reloaded_auto: "配置已重新加载！保存后 Espanso 会自动加载新的更改。"
+  keyboard_layout_reloaded: "键盘布局已更新！"
+  enabled: "Espanso 已启用！"
+  disabled: "Espanso 已禁用！"
+  rendering_error: "渲染时发生错误，请查看日志获取更多信息。"
+
+search:
+  hint: "按内容或触发词搜索匹配项（输入 > 可查看命令）"
+
+builtin:
+  paste_active_config: "粘贴当前配置信息"
+  paste_active_app: "粘贴当前应用信息（检测）"
+  show_active_config: "显示当前配置信息"
+  show_active_app: "显示当前应用信息（检测）"
+  show_logs: "显示 Espanso 日志"
+  open_search: "打开搜索栏"
+  exit: "退出 Espanso"
+  restart: "重启 Espanso"
+
+textview:
+  logs_title: "Espanso 日志"

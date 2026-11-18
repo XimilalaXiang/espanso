@@ -1,0 +1,39 @@
+# English (fallback) UI catalog.
+# Keep keys stable; automation sync bots should only append/update translations,
+# not rename keys without a migration note.
+
+tray:
+  disable: "Disable"
+  enable: "Enable"
+  open_search: "Open search bar"
+  reload_config: "Reload config"
+  open_config_folder: "Open config folder"
+  show_logs: "Show logs"
+  exit: "Exit espanso"
+  secure_input_explain: "Why is Espanso not working?"
+  secure_input_workaround: "Launch SecureInput auto-fix"
+
+notify:
+  running: "Espanso is running!"
+  config_reloaded: "Configuration reloaded!"
+  config_reloaded_auto: "Configuration reloaded! Espanso automatically loads new changes as soon as you save them."
+  keyboard_layout_reloaded: "Updated keyboard layout!"
+  enabled: "Espanso enabled!"
+  disabled: "Espanso disabled!"
+  rendering_error: "An error occurred during rendering, please examine the logs for more information."
+
+search:
+  hint: "Search matches by content or trigger (or type > to see commands)"
+
+builtin:
+  paste_active_config: "Paste active config information"
+  paste_active_app: "Paste active application information (detect)"
+  show_active_config: "Show active config information"
+  show_active_app: "Show active application information (detect)"
+  show_logs: "Show Espanso's logs"
+  open_search: "Open search bar"
+  exit: "Exit espanso"
+  restart: "Restart espanso"
+
+textview:
+  logs_title: "Espanso Logs"

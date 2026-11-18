@@ -1,0 +1,16 @@
+[package]
+name = "espanso-i18n"
+version = "0.1.0"
+authors = ["Federico Terzi <federico-terzi@users.noreply.github.com>"]
+edition = "2021"
+description = "Localization helpers and embedded locale catalogs for Espanso"
+license = "GPL-3.0"
+
+[dependencies]
+log.workspace = true
+serde.workspace = true
+serde_norway.workspace = true
+sys-locale = "0.3.1"
+
+[lints]
+workspace = true

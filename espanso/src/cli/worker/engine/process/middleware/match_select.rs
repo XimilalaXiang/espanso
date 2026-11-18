@@ -18,6 +18,7 @@
  */
 
 use espanso_engine::process::MatchSelector;
+use espanso_i18n::t;
 use log::error;
 
 use crate::gui::{SearchItem, SearchUI};
@@ -76,13 +77,16 @@ impl MatchSelector for MatchSelectorAdapter<'_> {
             })
             .collect();
 
-        let hint = if is_search {
-            Some("Search matches by content or trigger (or type > to see commands)")
+        let hint_text = if is_search {
+            Some(t("search.hint"))
         } else {
             None
         };
 
-        match self.search_ui.show(&search_items, hint) {
+        match self
+            .search_ui
+            .show(&search_items, hint_text.as_deref())
+        {
             Ok(Some(selected_id)) => match selected_id.parse::<i32>() {
                 Ok(id) => Some(id),
                 Err(err) => {
