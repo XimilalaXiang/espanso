@@ -136,7 +136,7 @@ impl<'a> super::engine::process::middleware::match_select::MatchProvider<'a>
                 },
                 MatchVariant::Builtin(m) => MatchSummary {
                     id: m.id,
-                    label: m.label,
+                    label: m.label.as_str(),
                     tag: m.triggers.first().map(String::as_ref),
                     additional_search_terms: vec![],
                     is_builtin: true,

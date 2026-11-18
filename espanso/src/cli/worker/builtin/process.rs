@@ -18,6 +18,7 @@
  */
 
 use espanso_engine::event::{EventType, ExitMode};
+use espanso_i18n::t;
 
 use crate::cli::worker::builtin::generate_next_builtin_id;
 
@@ -26,7 +27,7 @@ use super::BuiltInMatch;
 pub fn create_match_exit() -> BuiltInMatch {
     BuiltInMatch {
         id: generate_next_builtin_id(),
-        label: "Exit espanso",
+        label: t("builtin.exit"),
         triggers: Vec::new(),
         action: |_| EventType::ExitRequested(ExitMode::ExitAllProcesses),
         ..Default::default()
@@ -36,7 +37,7 @@ pub fn create_match_exit() -> BuiltInMatch {
 pub fn create_match_restart() -> BuiltInMatch {
     BuiltInMatch {
         id: generate_next_builtin_id(),
-        label: "Restart espanso",
+        label: t("builtin.restart"),
         triggers: Vec::new(),
         action: |_| EventType::ExitRequested(ExitMode::RestartWorker),
         ..Default::default()

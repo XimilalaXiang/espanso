@@ -18,6 +18,7 @@
  */
 
 use espanso_config::config::Config;
+use espanso_i18n::t;
 use espanso_ui::UIRemote;
 
 pub struct NotificationManager<'a> {
@@ -37,21 +38,19 @@ impl<'a> NotificationManager<'a> {
     }
 
     pub fn notify_start(&self) {
-        self.notify("Espanso is running!");
+        self.notify(&t("notify.running"));
     }
 
     pub fn notify_config_reloaded(&self, is_manual_restart: bool) {
         if is_manual_restart {
-            self.notify("Configuration reloaded!");
+            self.notify(&t("notify.config_reloaded"));
         } else {
-            self.notify(
-        "Configuration reloaded! Espanso automatically loads new changes as soon as you save them.",
-      );
+            self.notify(&t("notify.config_reloaded_auto"));
         }
     }
 
     pub fn notify_keyboard_layout_reloaded(&self) {
-        self.notify("Updated keyboard layout!");
+        self.notify(&t("notify.keyboard_layout_reloaded"));
     }
 }
 
@@ -63,15 +62,13 @@ impl espanso_engine::process::NotificationManager for NotificationManager<'_> {
         }
 
         if enabled {
-            self.notify("Espanso enabled!");
+            self.notify(&t("notify.enabled"));
         } else {
-            self.notify("Espanso disabled!");
+            self.notify(&t("notify.disabled"));
         }
     }
 
     fn notify_rendering_error(&self) {
-        self.notify(
-            "An error occurred during rendering, please examine the logs for more information.",
-        );
+        self.notify(&t("notify.rendering_error"));
     }
 }

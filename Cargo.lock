@@ -938,6 +938,7 @@ dependencies = [
  "espanso-config",
  "espanso-detect",
  "espanso-engine",
+ "espanso-i18n",
  "espanso-info",
  "espanso-inject",
  "espanso-ipc",
@@ -1029,11 +1030,22 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "crossbeam",
+ "espanso-i18n",
  "html2text",
  "log",
  "pulldown-cmark",
  "thiserror 1.0.56",
  "unicode-segmentation",
+]
+
+[[package]]
+name = "espanso-i18n"
+version = "0.1.0"
+dependencies = [
+ "log",
+ "serde",
+ "serde_norway",
+ "sys-locale 0.3.2",
 ]
 
 [[package]]
@@ -1151,7 +1163,7 @@ dependencies = [
  "log",
  "rand 0.8.6",
  "regex",
- "sys-locale",
+ "sys-locale 0.1.0",
  "thiserror 1.0.56",
 ]
 
@@ -3291,6 +3303,15 @@ dependencies = [
  "libc",
  "web-sys",
  "winapi 0.3.9",
+]
+
+[[package]]
+name = "sys-locale"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8eab9a99a024a169fe8a903cf9d4a3b3601109bcc13bd9e3c6fff259138626c4"
+dependencies = [
+ "libc",
 ]
 
 [[package]]

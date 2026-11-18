@@ -18,6 +18,7 @@
  */
 
 use espanso_engine::event::EventType;
+use espanso_i18n::t;
 
 use crate::cli::worker::builtin::generate_next_builtin_id;
 
@@ -29,7 +30,7 @@ pub fn create_match_trigger_search_bar(
 ) -> BuiltInMatch {
     BuiltInMatch {
         id: generate_next_builtin_id(),
-        label: "Open search bar",
+        label: t("builtin.open_search"),
         triggers: trigger.map(|trigger| vec![trigger]).unwrap_or_default(),
         hotkey,
         action: |_| EventType::ShowSearchBar,

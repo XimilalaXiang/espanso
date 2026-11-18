@@ -1,7 +1,7 @@
 /*
  * This file is part of espanso.
  *
- * Copyright  id: (), label: () id: (), label: () id: (), label: ()(C) 2019-2021 Federico Terzi
+ * Copyright (C) 2019-2021 Federico Terzi
  *
  * espanso is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,8 @@
  */
 
 use std::cell::RefCell;
+
+use espanso_i18n::t;
 
 use super::super::Middleware;
 use crate::event::{
@@ -66,35 +68,35 @@ impl Middleware for ContextMenuMiddleware {
                     MenuItem::Simple(if *is_enabled {
                         SimpleMenuItem {
                             id: CONTEXT_ITEM_DISABLE,
-                            label: "Disable".to_string(),
+                            label: t("tray.disable"),
                         }
                     } else {
                         SimpleMenuItem {
                             id: CONTEXT_ITEM_ENABLE,
-                            label: "Enable".to_string(),
+                            label: t("tray.enable"),
                         }
                     }),
                     MenuItem::Simple(SimpleMenuItem {
                         id: CONTEXT_ITEM_OPEN_SEARCH,
-                        label: "Open search bar".to_string(),
+                        label: t("tray.open_search"),
                     }),
                     MenuItem::Separator,
                     MenuItem::Simple(SimpleMenuItem {
                         id: CONTEXT_ITEM_RELOAD,
-                        label: "Reload config".to_string(),
+                        label: t("tray.reload_config"),
                     }),
                     MenuItem::Simple(SimpleMenuItem {
                         id: CONTEXT_ITEM_OPEN_CONFIG_FOLDER,
-                        label: "Open config folder".to_string(),
+                        label: t("tray.open_config_folder"),
                     }),
                     MenuItem::Simple(SimpleMenuItem {
                         id: CONTEXT_ITEM_SHOW_LOGS,
-                        label: "Show logs".to_string(),
+                        label: t("tray.show_logs"),
                     }),
                     MenuItem::Separator,
                     MenuItem::Simple(SimpleMenuItem {
                         id: CONTEXT_ITEM_EXIT,
-                        label: "Exit espanso".to_string(),
+                        label: t("tray.exit"),
                     }),
                 ];
 
@@ -103,14 +105,14 @@ impl Middleware for ContextMenuMiddleware {
                         0,
                         MenuItem::Simple(SimpleMenuItem {
                             id: CONTEXT_ITEM_SECURE_INPUT_EXPLAIN,
-                            label: "Why is Espanso not working?".to_string(),
+                            label: t("tray.secure_input_explain"),
                         }),
                     );
                     items.insert(
                         1,
                         MenuItem::Simple(SimpleMenuItem {
                             id: CONTEXT_ITEM_SECURE_INPUT_TRIGGER_WORKAROUND,
-                            label: "Launch SecureInput auto-fix".to_string(),
+                            label: t("tray.secure_input_workaround"),
                         }),
                     );
                     items.insert(2, MenuItem::Separator);

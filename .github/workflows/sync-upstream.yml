@@ -1,0 +1,93 @@
+name: Sync upstream
+
+# Scaffold for the long-term Chinese fork maintenance pipeline.
+# Phase 1: open a sync PR from espanso/espanso@dev when the schedule fires.
+# Later phases can chain locale key extraction + auto-translate + release.
+
+on:
+  schedule:
+    # Every 3 days at 03:17 UTC
+    - cron: "17 3 */3 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout fork
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git identity
+        run: |
+          git config user.name "espanso-zh-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Add upstream remote
+        run: |
+          git remote add upstream https://github.com/espanso/espanso.git
+          git fetch upstream dev
+          git fetch origin dev
+
+      - name: Merge upstream/dev
+        id: merge
+        run: |
+          set -euo pipefail
+          BRANCH="chore/sync-upstream-$(date -u +%Y%m%d)"
+          git checkout -B "$BRANCH" origin/dev
+          if git merge --no-edit upstream/dev; then
+            echo "conflict=false" >> "$GITHUB_OUTPUT"
+            if git diff --quiet origin/dev..HEAD; then
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+            else
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            git merge --abort || true
+            echo "conflict=true" >> "$GITHUB_OUTPUT"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+
+      - name: Push branch
+        if: steps.merge.outputs.conflict == 'false' && steps.merge.outputs.changed == 'true'
+        run: git push -u origin "${{ steps.merge.outputs.branch }}"
+
+      - name: Open or update pull request
+        if: steps.merge.outputs.conflict == 'false' && steps.merge.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ steps.merge.outputs.branch }}
+        run: |
+          TITLE="chore: sync upstream $(date -u +%Y-%m-%d)"
+          BODY=$(cat <<'EOF'
+          Automated merge of `espanso/espanso@dev` into this Chinese maintenance fork.
+
+          Checklist before merge:
+          - [ ] `cargo test -p espanso-i18n`
+          - [ ] Diff `espanso-i18n/locales/en.yml` against any new hardcoded UI strings
+          - [ ] Update `espanso-i18n/locales/zh-CN.yml` for new keys (`needs-review` if machine-translated)
+          EOF
+          )
+          EXISTING=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number')
+          if [ -n "$EXISTING" ]; then
+            gh pr edit "$EXISTING" --title "$TITLE" --body "$BODY"
+          else
+            gh pr create --base dev --head "$BRANCH" --title "$TITLE" --body "$BODY"
+          fi
+
+      - name: File issue on merge conflict
+        if: steps.merge.outputs.conflict == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TITLE="sync-upstream conflict $(date -u +%Y-%m-%d)"
+          BODY="Automated sync from \`espanso/espanso@dev\` failed with merge conflicts. Please resolve manually, keeping \`espanso-i18n\` (including \`espanso-i18n/locales/\`) intact."
+          gh issue create --title "$TITLE" --body "$BODY"

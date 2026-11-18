@@ -16,10 +16,15 @@
 | :----------------------------: | :-------------------------------------: |
 | ![example](images/example.gif) | ![example2025](images/example-2025.gif) |
 
+## Chinese maintenance fork
+
+This fork adds a maintainable UI localization layer (`espanso-i18n` + `espanso-i18n/locales/`) with Simplified Chinese as the default UI language. Set `ESPANSO_LANG=en` to force English. See [`espanso-i18n/locales/README.md`](espanso-i18n/locales/README.md) for catalog conventions and the upstream sync workflow.
+
 ## Quick Links
 
 * [espanso website](https://espanso.org)
 * [espanso hub](https://hub.espanso.org/)
+* [upstream repository](https://github.com/espanso/espanso)
 
 ### What is a Text Expander?
 
