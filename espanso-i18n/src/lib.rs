@@ -19,10 +19,12 @@
 
 //! Lightweight localization for Espanso UI strings.
 //!
-//! Catalogs live in the workspace `locales/` directory so sync/translate bots
-//! can update translations without touching Rust call sites.
+//! Catalogs live in `espanso-i18n/locales/` so sync/translate bots can update
+//! translations without touching Rust/C++ call sites.
 
 use std::collections::HashMap;
+use std::ffi::{CStr, CString};
+use std::os::raw::c_char;
 use std::sync::{Mutex, OnceLock};
 
 use log::{debug, warn};
@@ -110,6 +112,56 @@ pub fn t(key: &str) -> String {
 /// call sites that historically required `&'static str` labels.
 pub fn t_static(key: &str) -> &'static str {
     Box::leak(t(key).into_boxed_str())
+}
+
+/// Return all English catalog keys (sorted), useful for extract tooling/tests.
+pub fn english_keys() -> Vec<String> {
+    let catalog = flatten_yaml(EN_YAML);
+    let mut keys: Vec<_> = catalog.into_keys().collect();
+    keys.sort();
+    keys
+}
+
+/// Ensure catalogs are loaded and locale is initialized for C/FFI callers.
+///
+/// Safe to call multiple times. Used by wxWidgets UI before looking up keys.
+#[no_mangle]
+pub extern "C" fn espanso_i18n_ensure_initialized() {
+    init(None);
+}
+
+/// Look up a translation key for C++/wx callers.
+///
+/// Returns a newly allocated C string (UTF-8). Caller must free it with
+/// [`espanso_i18n_string_free`].
+///
+/// # Safety
+/// `key` must be a valid NUL-terminated UTF-8 C string.
+#[no_mangle]
+pub unsafe extern "C" fn espanso_i18n_t(key: *const c_char) -> *mut c_char {
+    espanso_i18n_ensure_initialized();
+    if key.is_null() {
+        return std::ptr::null_mut();
+    }
+    let Ok(key) = CStr::from_ptr(key).to_str() else {
+        return std::ptr::null_mut();
+    };
+    match CString::new(t(key)) {
+        Ok(value) => value.into_raw(),
+        Err(_) => std::ptr::null_mut(),
+    }
+}
+
+/// Free a string returned by [`espanso_i18n_t`].
+///
+/// # Safety
+/// `value` must be null or a pointer previously returned by [`espanso_i18n_t`].
+#[no_mangle]
+pub unsafe extern "C" fn espanso_i18n_string_free(value: *mut c_char) {
+    if value.is_null() {
+        return;
+    }
+    drop(CString::from_raw(value));
 }
 
 fn lookup(state: &I18nState, key: &str) -> String {
@@ -224,6 +276,18 @@ fn flatten_value(prefix: &str, value: &Value, out: &mut HashMap<String, String>)
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::sync::{Mutex, MutexGuard};
+
+    /// Serializes tests that call [`init`] then [`t`] against the process-global
+    /// locale. Without this, parallel cargo test runners can flip the locale
+    /// mid-assertion (seen under `nix build`).
+    static TEST_LOCALE_LOCK: Mutex<()> = Mutex::new(());
+
+    fn lock_locale_for_test() -> MutexGuard<'static, ()> {
+        TEST_LOCALE_LOCK
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+    }
 
     #[test]
     fn flattens_nested_yaml_keys() {
@@ -242,6 +306,7 @@ mod tests {
 
     #[test]
     fn translates_zh_cn_tray_and_falls_back() {
+        let _guard = lock_locale_for_test();
         init(Some("zh-CN"));
         assert_eq!(t("tray.disable"), "禁用");
         assert_eq!(t("notify.running"), "Espanso 正在运行！");
@@ -253,6 +318,7 @@ mod tests {
 
     #[test]
     fn english_locale_works() {
+        let _guard = lock_locale_for_test();
         init(Some("en"));
         assert_eq!(t("tray.open_search"), "Open search bar");
     }
@@ -281,5 +347,38 @@ mod tests {
             missing_in_en.is_empty(),
             "en missing keys present in zh-CN: {missing_in_en:?}"
         );
+    }
+
+    #[test]
+    fn welcome_wizard_and_cli_keys_resolve_in_zh_and_en() {
+        let samples = [
+            "welcome.title",
+            "welcome.got_it",
+            "wizard.welcome_title",
+            "wizard.start",
+            "wizard.migration_error_title",
+            "troubleshooting.window_title",
+            "troubleshooting.open_file",
+            "textview.copy_to_clipboard",
+            "cli.about",
+            "cli.service.start",
+            "cli.package.install",
+        ];
+
+        let _guard = lock_locale_for_test();
+
+        init(Some("zh-CN"));
+        for key in samples {
+            let value = t(key);
+            assert_ne!(value, key, "zh-CN missing {key}");
+            assert_ne!(value, "");
+        }
+
+        init(Some("en"));
+        for key in samples {
+            let value = t(key);
+            assert_ne!(value, key, "en missing {key}");
+            assert_ne!(value, "");
+        }
     }
 }

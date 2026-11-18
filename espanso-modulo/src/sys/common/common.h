@@ -27,10 +27,24 @@
 #include <wx/wx.h>
 #endif
 
+#include "i18n.h"
+
 void setFrameIcon(wxString iconPath, wxFrame *frame);
 
 void Activate(wxFrame *frame);
 
 void SetupWindowStyle(wxFrame *frame);
+
+// Translate a catalog key via espanso-i18n (UTF-8).
+inline wxString Tr(const char *key) {
+    espanso_i18n_ensure_initialized();
+    char *translated = espanso_i18n_t(key);
+    if (!translated) {
+        return wxString::FromUTF8(key);
+    }
+    wxString result = wxString::FromUTF8(translated);
+    espanso_i18n_string_free(translated);
+    return result;
+}
 
 #endif

@@ -8,6 +8,7 @@
 #define _UNICODE
 
 #include "textview_gui.h"
+#include "../common/common.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -36,7 +37,7 @@ TextViewFrame::TextViewFrame(wxWindow *parent, wxWindowID id,
     bSizer2->Add(0, 0, 1, wxEXPAND, 5);
 
     copy_to_clipboard_btn =
-        new wxButton(this, wxID_ANY, wxT("Copy to Clipboard"),
+        new wxButton(this, wxID_ANY, Tr("textview.copy_to_clipboard"),
                      wxDefaultPosition, wxDefaultSize, 0);
 
     copy_to_clipboard_btn->SetDefault();

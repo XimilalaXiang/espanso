@@ -60,7 +60,7 @@ class ErrorSetPanel : public wxPanel {
         header_sizer = new wxBoxSizer(wxHORIZONTAL);
 
         wxString path = wxString::FromUTF8(error_set_metadata->file_path);
-        wxString filename = wxString::Format(wxT("\u2022 %s (%i errors)"), path,
+        wxString filename = wxString::Format(Tr("troubleshooting.file_errors_fmt"), path,
                                              error_set_metadata->errors_count);
         filename_label = new wxStaticText(this, wxID_ANY, filename,
                                           wxDefaultPosition, wxDefaultSize, 0);
@@ -74,7 +74,7 @@ class ErrorSetPanel : public wxPanel {
 
         header_sizer->Add(0, 0, 1, wxEXPAND, 5);
 
-        open_file_btn = new wxButton(this, wxID_ANY, wxT("Open file"),
+        open_file_btn = new wxButton(this, wxID_ANY, Tr("troubleshooting.open_file"),
                                      wxDefaultPosition, wxDefaultSize, 0);
         header_sizer->Add(open_file_btn, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
 
@@ -82,13 +82,13 @@ class ErrorSetPanel : public wxPanel {
 
         wxString errors_text = wxEmptyString;
         for (int i = 0; i < error_set_metadata->errors_count; i++) {
-            wxString level = wxT("ERROR");
+            wxString level = Tr("troubleshooting.error_level");
             if (error_set_metadata->errors[i].level ==
                 ERROR_METADATA_LEVEL_WARNING) {
-                level = wxT("WARNING");
+                level = Tr("troubleshooting.warning_level");
             }
             wxString error_text = wxString::Format(
-                wxT("[%s] %s\n"), level,
+                Tr("troubleshooting.error_line_fmt"), level,
                 wxString::FromUTF8(error_set_metadata->errors[i].message));
             errors_text.Append(error_text);
         }
@@ -144,15 +144,14 @@ DerivedTroubleshootingFrame::DerivedTroubleshootingFrame(wxWindow *parent)
     if (troubleshooting_metadata->error_sets_count == 0) {
         dont_show_checkbox->Hide();
         ignore_button->Hide();
-        info_label->SetLabel(wxT("Looks like your configuration is correct!"));
-        title_label->SetLabel(wxT("No errors detected"));
+        info_label->SetLabel(Tr("troubleshooting.no_errors_info"));
+        title_label->SetLabel(Tr("troubleshooting.no_errors_title"));
     } else if (troubleshooting_metadata->is_fatal_error) {
         dont_show_checkbox->Hide();
         ignore_button->Hide();
         info_label->SetLabel(
-            wxT("Espanso couldn't load some files due to configuration errors "
-                "and won't be able to start until you fix them."));
-        title_label->SetLabel(wxT("Errors detected, action needed"));
+            Tr("troubleshooting.fatal_info"));
+        title_label->SetLabel(Tr("troubleshooting.fatal_title"));
     }
 
     // If there is just one error, expand the error panel to fit the container

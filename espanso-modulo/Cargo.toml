@@ -10,6 +10,7 @@ serde.workspace = true
 anyhow.workspace = true
 thiserror.workspace = true
 regex.workspace = true
+espanso-i18n = { path = "../espanso-i18n" }
 
 [build-dependencies]
 cc.workspace = true

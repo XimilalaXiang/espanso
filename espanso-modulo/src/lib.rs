@@ -24,3 +24,17 @@ pub mod textview;
 pub mod troubleshooting;
 pub mod welcome;
 pub mod wizard;
+
+// Keep espanso-i18n linked so wx/C++ `Tr()` can call the FFI exports.
+use espanso_i18n::{espanso_i18n_ensure_initialized, espanso_i18n_string_free, espanso_i18n_t};
+
+#[used]
+static _FORCE_LINK_ESPANSO_I18N: (
+    extern "C" fn(),
+    unsafe extern "C" fn(*const std::os::raw::c_char) -> *mut std::os::raw::c_char,
+    unsafe extern "C" fn(*mut std::os::raw::c_char),
+) = (
+    espanso_i18n_ensure_initialized,
+    espanso_i18n_t,
+    espanso_i18n_string_free,
+);

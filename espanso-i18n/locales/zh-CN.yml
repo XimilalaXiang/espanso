@@ -1,5 +1,5 @@
 # Simplified Chinese UI catalog.
-# Missing keys fall back to locales/en.yml at runtime.
+# Missing keys fall back to en.yml at runtime.
 
 tray:
   disable: "禁用"
@@ -11,7 +11,6 @@ tray:
   exit: "退出 Espanso"
   secure_input_explain: "为什么 Espanso 无法工作？"
   secure_input_workaround: "启动 SecureInput 自动修复"
-
 notify:
   running: "Espanso 正在运行！"
   config_reloaded: "配置已重新加载！"
@@ -20,10 +19,8 @@ notify:
   enabled: "Espanso 已启用！"
   disabled: "Espanso 已禁用！"
   rendering_error: "渲染时发生错误，请查看日志获取更多信息。"
-
 search:
   hint: "按内容或触发词搜索匹配项（输入 > 可查看命令）"
-
 builtin:
   paste_active_config: "粘贴当前配置信息"
   paste_active_app: "粘贴当前应用信息（检测）"
@@ -33,6 +30,168 @@ builtin:
   open_search: "打开搜索栏"
   exit: "退出 Espanso"
   restart: "重启 Espanso"
-
 textview:
   logs_title: "Espanso 日志"
+  copy_to_clipboard: "复制到剪贴板"
+welcome:
+  title: "Espanso 正在运行！"
+  title_already_running: "Espanso 已经在运行！"
+  tray_info: "你现在应该能在托盘栏看到它的图标："
+  tray_info_macos: "你应该能在状态栏看到 Espanso 图标："
+  try_typing: "试着在下方输入 \":espanso\"（不要加引号）"
+  docs_label: "想了解更多？请访问文档："
+  docs_url: "https://espanso.org/docs/get-started/"
+  dont_show_again: "不再显示"
+  got_it: "知道了！"
+wizard:
+  window_title: "Espanso"
+  page_placeholder: "页面"
+  start: "开始"
+  quit: "退出"
+  continue: "继续"
+  enable: "启用"
+  welcome_title: "欢迎使用 Espanso！"
+  welcome_version: "（版本 1.2.3）"
+  welcome_description: "此向导将帮助你快速上手 Espanso。\n\n准备好后请点击“开始”"
+  move_bundle_title: "移动到 /Applications 文件夹"
+  move_bundle_description: "Espanso 当前不在根 Applications 目录中运行，这会导致无法正常工作。\n\n请将 Espanso.app 移动到根目录 /Applications 文件夹后重新启动。\n"
+  legacy_title: "检测到旧版本"
+  legacy_description: "检测到旧版 Espanso 进程，会阻止新版本正常工作。\n\n请先结束并卸载旧版本后再继续。\n\n如果你已经卸载了旧版本，可能需要重启电脑才能检测到更改。\n\n更多信息请参见："
+  legacy_url: "https://espanso.org/legacy/uninstall"
+  wrong_edition_title: "检测到不兼容"
+  wrong_edition_x11: "此版本的 Espanso 是为基于 X11 的系统编译的，但你似乎正在使用基于 Wayland 的桌面环境。\n\n很遗憾，这两个版本不兼容。要使用 Espanso，请切换到基于 X11 的环境，或从网站下载 Wayland 版本。\n\n更多信息："
+  wrong_edition_wayland: "此版本的 Espanso 是为基于 Wayland 的系统编译的，但你似乎正在使用基于 X11 的桌面环境。\n\n很遗憾，这两个版本不兼容。要使用 Espanso，请切换到基于 Wayland 的环境，或从网站下载 X11 版本。\n\n更多信息："
+  install_url: "https://espanso.org/install"
+  quit_espanso: "退出 Espanso"
+  migrate_title: "迁移配置"
+  migrate_description: "新版本使用略有不同的配置格式，以支持一些激动人心的新功能。\n\n为方便过渡，Espanso 提供两种选择：\n\n  - 自动备份旧配置到“文稿”文件夹并迁移到新格式（推荐）。\n  - 使用兼容模式，不更改配置。\n\n请注意：\n\n  - 兼容模式不支持所有新功能\n  - 你之后随时可以迁移配置\n\n更多信息请参见："
+  migrate_url: "https://espanso.org/migration"
+  use_compatibility_mode: "使用兼容模式"
+  backup_and_migrate: "备份并迁移"
+  auto_start_title: "开机自动启动"
+  auto_start_description: "Espanso 可以在你启动电脑时自动运行。\n\n是否继续？"
+  auto_start_checkbox: "是，开机时启动 Espanso（推荐）"
+  auto_start_note: "注意：你之后随时可以关闭此选项。"
+  add_path_title: "添加到 PATH"
+  add_path_description: "Espanso 提供了丰富的命令行界面，可用于强大功能，并在调试配置问题时很有帮助。\n\n为方便访问，可以将 Espanso 自动添加到 PATH 环境变量。是否继续？\n"
+  add_path_checkbox: "是，将 espanso 添加到 PATH"
+  add_path_note: "注意：如果你不清楚 PATH 环境变量是什么，建议保持勾选。"
+  accessibility_title: "启用辅助功能"
+  accessibility_description: "Espanso 需要辅助功能权限，才能检测并向应用程序插入片段。\n\n请按以下步骤启用：\n\n1. 点击右下角的“启用”\n2. 在出现的对话框中，点击“打开系统偏好设置”\n"
+  accessibility_description2: "3. 然后在“隐私”面板中点击锁图标（1）以允许编辑，并勾选“Espanso”（2），如图所示："
+  migration_error_title: "迁移错误"
+  migration_error_clean: "迁移过程中发生错误，但你的旧文件未被修改。\n\n请在终端运行 'espanso log' 以获取更多信息。"
+  migration_error_dirty: "迁移过程中发生错误，Espanso 无法完成该过程。部分配置文件可能缺失，但你可以在“文稿”文件夹中找到备份。\n\n请在终端运行 'espanso log' 以获取更多信息。"
+  migration_error_unknown: "迁移过程中发生错误。\n\n请在终端运行 'espanso log' 以获取更多信息。"
+troubleshooting:
+  window_title: "故障排除"
+  errors_detected: "检测到错误"
+  no_errors_title: "未检测到错误"
+  no_errors_info: "看起来你的配置是正确的！"
+  fatal_title: "检测到错误，需要处理"
+  nonfatal_info: "由于配置错误，Espanso 无法加载部分文件。在修复之前，部分片段或设置可能不可用。"
+  fatal_info: "由于配置错误，Espanso 无法加载部分文件，在你修复之前将无法启动。"
+  dont_show_again: "对非严重错误不再显示"
+  ignore_errors: "忽略错误"
+  open_file: "打开文件"
+  file_errors_fmt: "• %s（%i 个错误）"
+  error_level: "错误"
+  warning_level: "警告"
+  error_line_fmt: "[%s] %s\n"
+cli:
+  about: "注重隐私的跨平台文本扩展器"
+  help:
+    verbosity: "设置详细输出级别"
+    config_dir: "指定 Espanso 读取配置的自定义路径"
+    package_dir: "指定 Espanso 包目录的自定义路径"
+    runtime_dir: "指定 Espanso 运行时目录的自定义路径"
+  env_path:
+    about: "将 'espanso' 命令添加到 PATH，或从 PATH 中移除"
+    help:
+      prompt: "仅 macOS：若操作需要提升权限则提示授权。"
+    register: "将 'espanso' 命令添加到 PATH"
+    unregister: "从 PATH 中移除 'espanso' 命令"
+  cmd:
+    about: "向 Espanso 守护进程发送命令。"
+    enable: "启用扩展。"
+    disable: "禁用扩展。"
+    toggle: "启用/禁用扩展。"
+    search: "打开 Espanso 搜索栏。"
+  edit:
+    about: "快捷打开默认文本编辑器以编辑配置文件"
+    help:
+      target_file: "默认为 \"match/base.yml\"，表示你要编辑文件的相对路径，\n例如 'config/default.yml' 或 'match/base.yml'。\n为方便起见，也可以直接指定名称，Espanso 会推断路径。\n例如，指定 'email' 等同于 'match/email.yml'。"
+  daemon:
+    about: "在不新建进程的情况下启动守护进程。"
+  log:
+    about: "打印守护进程日志。"
+  stats:
+    about: "显示扩展统计信息"
+    help:
+      period: "限制时间范围：today|week|month|year|all（默认 all）"
+      count: "显示前 N 个触发词（默认 10）"
+      json: "以 JSON 输出"
+      grep: "按 SQL LIKE 模式过滤触发词，例如 :td%"
+      days: "保留天数（默认 180）"
+    clear: "清空统计数据库"
+    prune: "删除超过 N 天的记录"
+  modulo:
+    form: "显示可自定义表单"
+    search: "显示搜索框"
+    textview: "显示文本视图"
+    troubleshoot: "显示故障排除界面"
+    welcome: "显示欢迎界面"
+    help:
+      input_file: "输入文件，或使用 - 表示标准输入"
+      json: "将输入数据解释为 JSON"
+      title: "要显示的窗口标题"
+  path:
+    about: "打印所有 Espanso 目录路径，方便定位配置与匹配项。"
+    config: "打印当前配置文件夹路径。"
+    packages: "打印当前包文件夹路径。"
+    data: "打印当前数据文件夹路径。"
+    runtime: "打印当前运行时文件夹路径。"
+    default: "打印默认配置文件路径。"
+    base: "打印默认匹配文件路径。"
+  service:
+    about: "一组用于管理 Espanso 服务的命令（例如启用开机自启）。"
+    register: "将 Espanso 注册为系统服务"
+    unregister: "从系统服务中注销 Espanso"
+    check: "检查 Espanso 是否已注册为系统服务"
+    start: "以服务方式启动 Espanso"
+    restart: "重启 Espanso 服务"
+    stop: "停止 Espanso 服务"
+    status: "检查 Espanso 守护进程是否在运行。"
+    help:
+      unmanaged: "以非托管服务方式运行 Espanso（绕过系统管理器）"
+  match:
+    about: "通过命令行列出并执行匹配项"
+    list: "将匹配项打印到标准输出"
+    exec: "触发某个匹配项的扩展"
+    help:
+      json: "以 JSON 格式输出匹配项"
+      only_triggers: "只打印触发词，不打印替换内容"
+      preserve_newlines: "打印替换内容时保留换行。使用 JSON 格式时无效。"
+      class: "仅返回在给定 class 下会生效的匹配项。用于列出应用专属配置中的匹配项。"
+      title: "仅返回在给定 title 下会生效的匹配项。用于列出应用专属配置中的匹配项。"
+      exec: "仅返回在给定 exec 下会生效的匹配项。用于列出应用专属配置中的匹配项。"
+      trigger: "要扩展的匹配项触发词"
+      arg: "为扩展指定参数，格式为 --arg 'name=value'。可指定多个。"
+  package:
+    about: "包管理命令"
+    install: "安装包"
+    uninstall: "移除包"
+    update: "更新包。若包名为 'all'，则尝试更新所有包。"
+    list: "列出所有已安装的包"
+    help:
+      external: "允许从未验证的仓库安装包。"
+      package_name: "包名"
+      version: "强制安装指定版本，而不是最新可用版本。"
+      git: "Espanso 应从中安装包的 Git 仓库。"
+      git_branch: "强制 Espanso 在特定 git 分支上查找包"
+      force: "若包已安装则覆盖"
+      refresh_index: "请求获取最新的 Espanso Hub 包索引，而不是使用缓存版本。"
+      use_native_git: "若指定，Espanso 将使用 'git' 命令，而不是尝试直接方法。"
+  workaround:
+    about: "一组用于解决常见问题的变通方案。"
+    secure_input: "通过自动化常见步骤尝试禁用 Secure Input。"

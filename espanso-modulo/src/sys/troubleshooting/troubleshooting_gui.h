@@ -10,6 +10,7 @@
 #include <wx/artprov.h>
 #include <wx/bitmap.h>
 #include <wx/button.h>
+#include "../common/common.h"
 #include <wx/checkbox.h>
 #include <wx/colour.h>
 #include <wx/font.h>
@@ -47,7 +48,7 @@ class TroubleshootingFrame : public wxFrame {
 
   public:
     TroubleshootingFrame(wxWindow *parent, wxWindowID id = wxID_ANY,
-                         const wxString &title = wxT("Troubleshooting"),
+                         const wxString &title = Tr("troubleshooting.window_title"),
                          const wxPoint &pos = wxDefaultPosition,
                          const wxSize &size = wxSize(841, 544),
                          long style = wxDEFAULT_FRAME_STYLE | wxTAB_TRAVERSAL);

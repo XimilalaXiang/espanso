@@ -10,6 +10,7 @@
 #include <wx/artprov.h>
 #include <wx/bitmap.h>
 #include <wx/button.h>
+#include "../common/common.h"
 #include <wx/checkbox.h>
 #include <wx/colour.h>
 #include <wx/font.h>
@@ -115,7 +116,7 @@ class WizardFrame : public wxFrame {
 
   public:
     WizardFrame(wxWindow *parent, wxWindowID id = wxID_ANY,
-                const wxString &title = wxT("Espanso"),
+                const wxString &title = Tr("wizard.window_title"),
                 const wxPoint &pos = wxDefaultPosition,
                 const wxSize &size = wxSize(600, 577),
                 long style = wxCAPTION | wxCLOSE_BOX | wxRESIZE_BORDER |

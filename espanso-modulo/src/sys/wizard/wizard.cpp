@@ -190,23 +190,16 @@ void DerivedFrame::migrate_button_clicked(wxCommandEvent &event) {
             this->navigate_to_next_page_or_close();
         } else if (result == MIGRATE_RESULT_CLEAN_FAILURE) {
             wxMessageBox(
-                wxT("An error occurred during the migration, but your old "
-                    "files were not modified.\n\nPlease run 'espanso log' in a "
-                    "terminal for more information."),
-                wxT("Migration error"), wxICON_ERROR);
+                Tr("wizard.migration_error_clean"),
+                Tr("wizard.migration_error_title"), wxICON_ERROR);
         } else if (result == MIGRATE_RESULT_DIRTY_FAILURE) {
             wxMessageBox(
-                wxT("An error occurred during the migration and espanso "
-                    "couldn't complete the process. Some configuration files "
-                    "might be missing, but you'll find the backup in the "
-                    "Documents folder.\n\nPlease run 'espanso log' in a "
-                    "terminal for more information."),
-                wxT("Migration error"), wxICON_ERROR);
+                Tr("wizard.migration_error_dirty"),
+                Tr("wizard.migration_error_title"), wxICON_ERROR);
         } else if (result == MIGRATE_RESULT_UNKNOWN_FAILURE) {
             wxMessageBox(
-                wxT("An error occurred during the migration.\n\nPlease run "
-                    "'espanso log' in a terminal for more information."),
-                wxT("Migration error"), wxICON_ERROR);
+                Tr("wizard.migration_error_unknown"),
+                Tr("wizard.migration_error_title"), wxICON_ERROR);
         }
     }
 }
