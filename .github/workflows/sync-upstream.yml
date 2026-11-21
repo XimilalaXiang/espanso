@@ -1,8 +1,11 @@
 name: Sync upstream
 
-# Scaffold for the long-term Chinese fork maintenance pipeline.
-# Phase 1: open a sync PR from espanso/espanso@dev when the schedule fires.
-# Later phases can chain locale key extraction + auto-translate + release.
+# Chinese maintenance fork pipeline:
+# 1) Merge espanso/espanso@dev into this fork
+# 2) On success with changes: extract locale keys, draft missing catalog
+#    entries (English/TODO placeholders, needs-review), commit onto the
+#    same sync branch, open/update a PR (never auto-merge)
+# 3) On merge conflict: fail the job with a clear summary (Issues are disabled)
 
 on:
   schedule:
@@ -13,7 +16,6 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  issues: write
 
 jobs:
   sync:
@@ -56,6 +58,53 @@ jobs:
           fi
           echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
 
+      - name: Fail on merge conflict
+        if: steps.merge.outputs.conflict == 'true'
+        run: |
+          {
+            echo "## Sync upstream failed: merge conflict"
+            echo
+            echo "Automated merge of \`espanso/espanso@dev\` into this Chinese"
+            echo "maintenance fork conflicted."
+            echo
+            echo "Please resolve manually on a branch from \`dev\`, keeping"
+            echo "\`espanso-i18n\` (including \`espanso-i18n/locales/\`) intact."
+            echo
+            echo "This repository has GitHub Issues disabled, so no issue was filed."
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "::error::Upstream sync merge conflict. Resolve manually; Issues are disabled on this repo."
+          exit 1
+
+      - name: Set up Python
+        if: steps.merge.outputs.conflict == 'false' && steps.merge.outputs.changed == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Rust
+        if: steps.merge.outputs.conflict == 'false' && steps.merge.outputs.changed == 'true'
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Extract locale keys and draft missing catalogs
+        if: steps.merge.outputs.conflict == 'false' && steps.merge.outputs.changed == 'true'
+        id: locales
+        run: |
+          set -euo pipefail
+          REPORT="${RUNNER_TEMP}/locale-extract-report.md"
+          python3 scripts/extract_locale_keys.py --draft --report "$REPORT"
+          echo "report=$REPORT" >> "$GITHUB_OUTPUT"
+
+          if git diff --quiet -- espanso-i18n/locales/en.yml espanso-i18n/locales/zh-CN.yml; then
+            echo "drafted=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "drafted=true" >> "$GITHUB_OUTPUT"
+            git add espanso-i18n/locales/en.yml espanso-i18n/locales/zh-CN.yml
+            git commit -m "chore(i18n): draft locale keys after upstream sync"
+          fi
+
+          # Parity + call-site coverage check (cargo test + extract without --draft).
+          bash scripts/check_locales.sh
+
       - name: Push branch
         if: steps.merge.outputs.conflict == 'false' && steps.merge.outputs.changed == 'true'
         run: git push -u origin "${{ steps.merge.outputs.branch }}"
@@ -65,29 +114,45 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: ${{ steps.merge.outputs.branch }}
+          REPORT: ${{ steps.locales.outputs.report }}
+          DRAFTED: ${{ steps.locales.outputs.drafted }}
         run: |
+          set -euo pipefail
           TITLE="chore: sync upstream $(date -u +%Y-%m-%d)"
-          BODY=$(cat <<'EOF'
-          Automated merge of `espanso/espanso@dev` into this Chinese maintenance fork.
+          BODY_FILE="${RUNNER_TEMP}/sync-pr-body.md"
+          {
+            echo "Automated merge of \`espanso/espanso@dev\` into this Chinese maintenance fork."
+            echo
+            echo "This PR is **not** auto-merged. Drafted locale strings are English/TODO placeholders and must be reviewed before release."
+            echo
+            if [[ -f "$REPORT" ]]; then
+              cat "$REPORT"
+              echo
+            else
+              echo "## Locale extract / draft summary"
+              echo
+              echo "_Report file missing; re-run \`python3 scripts/extract_locale_keys.py --draft --report …\` locally._"
+              echo
+            fi
+            echo "## Reviewer checklist"
+            echo
+            echo "- [ ] Review upstream merge diff for unexpected conflicts with fork-only paths"
+            echo "- [ ] \`cargo test -p espanso-i18n\` / \`bash scripts/check_locales.sh\`"
+            echo "- [ ] Review any **drafted** \`zh-CN.yml\` placeholders (English/TODO) and replace with real Simplified Chinese; leave \`needs-review\` notes until done"
+            echo "- [ ] If new upstream UI copy is still hardcoded (not yet \`t\`/\`Tr\` keys), wrap or catalog it before relying on automation"
+            echo "- [ ] Do **not** treat AUTO-DRAFT / English placeholders as finalized Chinese"
+            if [[ "${DRAFTED}" == "true" ]]; then
+              echo
+              echo "_This run committed catalog drafts onto the sync branch._"
+            else
+              echo
+              echo "_This run did not need catalog drafts (en/zh-CN already covered call sites)._ "
+            fi
+          } > "$BODY_FILE"
 
-          Checklist before merge:
-          - [ ] `cargo test -p espanso-i18n`
-          - [ ] Diff `espanso-i18n/locales/en.yml` against any new hardcoded UI strings
-          - [ ] Update `espanso-i18n/locales/zh-CN.yml` for new keys (`needs-review` if machine-translated)
-          EOF
-          )
-          EXISTING=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number')
+          EXISTING=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number // empty')
           if [ -n "$EXISTING" ]; then
-            gh pr edit "$EXISTING" --title "$TITLE" --body "$BODY"
+            gh pr edit "$EXISTING" --title "$TITLE" --body-file "$BODY_FILE"
           else
-            gh pr create --base dev --head "$BRANCH" --title "$TITLE" --body "$BODY"
+            gh pr create --base dev --head "$BRANCH" --title "$TITLE" --body-file "$BODY_FILE"
           fi
-
-      - name: File issue on merge conflict
-        if: steps.merge.outputs.conflict == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          TITLE="sync-upstream conflict $(date -u +%Y-%m-%d)"
-          BODY="Automated sync from \`espanso/espanso@dev\` failed with merge conflicts. Please resolve manually, keeping \`espanso-i18n\` (including \`espanso-i18n/locales/\`) intact."
-          gh issue create --title "$TITLE" --body "$BODY"
